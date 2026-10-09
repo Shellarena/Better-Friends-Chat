@@ -1,0 +1,34 @@
+[plugin]
+id = "better-friends-chat"
+name = "Better Friends Chat"
+version = "1.0.0"
+author = "Shellarena"
+description = "More settings for Steam's Friends & Chat: open it as a flyout inside the Steam window, sort offline friends by last online and only show the docked chat when a conversation is open."
+
+[backend]
+entry = "backend/main.lua"
+sources = ["backend/**/*.lua"]
+
+[frontend]
+entry = "frontend/index.tsx"
+
+[compiler]
+# auto = detect the Millennium installation and install the plugin there
+output_path = "auto"
+
+[dev]
+auto_restart = true
+# Patches only apply when Steam serves its UI again, so switch this to "both" while
+# working on backend/patches.lua or the frontend.
+reload_steamui_when = "both"
+
+[inspect]
+depth = 3
+colors = true
+show_hidden = false
+
+[logger]
+padding = 0
+backend_prefix  = "BCK"
+frontend_prefix = "FRT"
+webview_prefix  = "WEB"

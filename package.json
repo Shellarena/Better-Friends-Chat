@@ -1,0 +1,21 @@
+{
+  "name": "better-friends-chat",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Millennium plugin that adds more settings to Steam's Friends & Chat.",
+  "scripts": {
+    "dev": "starlight watch",
+    "build": "starlight pack",
+    "build:release": "starlight pack --release",
+    "prepare": "starlight lsp",
+    "typecheck": "tsc -p frontend/tsconfig.json",
+    "test": "node tests/patches.test.mjs"
+  },
+  "devDependencies": {
+    "@steambrew/starlight": "^1.1.6",
+    "@types/react": "19.1.1",
+    "@types/react-dom": "19.1.1",
+    "typescript": "^7.0.2"
+  }
+}
