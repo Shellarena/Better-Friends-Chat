@@ -19,7 +19,7 @@ export interface BrowserContext {
 	[key: string]: unknown;
 }
 
-/** Steam's own desktop context, see library.js: {m_unPID: 0, m_nBrowserID: -1}. */
+/** Steam's own desktop context, see steamui/sp.js: {m_unPID: 0, m_nBrowserID: -1}. */
 export const DESKTOP_CONTEXT: BrowserContext = { m_unPID: 0, m_nBrowserID: -1 };
 
 export const friendsApp = (): any => window.g_FriendsUIApp;
@@ -191,7 +191,7 @@ export interface TitleBarProps {
 let titleBar: ((props: TitleBarProps) => unknown) | null | undefined;
 
 /**
- * Steam's title bar with the window buttons (library.js), as in the friends window.
+ * Steam's title bar with the window buttons (steamui/sp.js), as in the friends window.
  * Without a popup it only works with handlers such as onClose.
  */
 export function getTitleBarComponent(): ((props: TitleBarProps) => unknown) | null {

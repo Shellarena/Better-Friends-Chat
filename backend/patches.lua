@@ -1,12 +1,13 @@
--- Patches for Steam's friends UI bundle (chunk~<hash>.js) and, where a definition
--- says so, its shared UI library (library.js). Millennium applies them while Steam
--- serves the file, so the patched code is in place before it runs.
+-- Patches for Steam's UI bundle (sp.js), which holds the friends UI and the shared UI
+-- library. (Until Steam's update of October 2026 they were chunk~<hash>.js and
+-- library.js; a definition can still name another `file`.) Millennium applies them
+-- while Steam serves the file, so the patched code is in place before it runs.
 --
 -- Every injected call goes through @HOOKS@, the `bfcHooks` object the plugin frontend
 -- puts on window. The optional chaining keeps Steam's original behaviour whenever the
 -- frontend is not loaded (yet) or the hook returns nothing.
 --
--- Regex syntax is Rust's `regex` crate. The bundle is ~14 MB and Steam waits for it,
+-- Regex syntax is Rust's `regex` crate. The bundle is ~16 MB and Steam waits for it,
 -- so patterns must stay cheap: @ID@ (a minified identifier) is an ASCII class, never
 -- \w (Unicode-aware and very slow on large inputs), and no pattern spans arbitrary
 -- text with .* or large counted repetitions.
@@ -24,8 +25,7 @@
 
 local HOOKS = "window.__bfcHooks"
 local ID = "[A-Za-z0-9_$]+"
-local CHUNK_FILE = [==[chunk~[0-9a-f]+\.js]==]
-local LIBRARY_FILE = [==[library\.js]==]
+local UI_FILE = [==[sp\.js]==]
 
 local definitions = {
     -- 1) Start the "Offline" friends group sorted by "last online".
@@ -117,7 +117,7 @@ local definitions = {
     --    whenever 180px per tab (+168px) exceed the width of the tab bar, often with a
     --    single chat. The plugin can decide instead; undefined keeps Steam's rule.
     {
-        find = [==[=this\.m_elchatTabDiv&&180\*[^,]*\|\|!1,]==],
+        find = [==[=this\.m_elchatTabDiv&&[^,]*clientWidth\|\|!1,]==],
         transforms = {
             {
                 match = [==[=(this\.m_elchatTabDiv&&[^,]*\|\|!1),$]==],
@@ -132,7 +132,6 @@ local definitions = {
     --    the flyout's page usually is, and such popups did not show up from the
     --    flyout's view. The plugin can keep the menu in the page instead.
     {
-        file = LIBRARY_FILE,
         find = [==[\.innerWidth<400\|\|@ID@\?\.BOnlyPopups\(\)\)&&!!@ID@\.SteamClient\?\.Window\)]==],
         transforms = {
             {
@@ -178,7 +177,7 @@ function M.get()
             }
         end
         patches[#patches + 1] = {
-            file = definition.file or CHUNK_FILE,
+            file = definition.file or UI_FILE,
             find = expand(definition.find, { ID = ID }),
             transforms = transforms,
         }
