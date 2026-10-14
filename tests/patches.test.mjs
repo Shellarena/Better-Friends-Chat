@@ -38,7 +38,7 @@ function parsePatches(source) {
 	const pluginId = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).name;
 	const id = source.match(/local ID = "([^"]+)"/)[1];
 	const hooks = source.match(/local HOOKS = "([^"]+)"/)[1];
-	// Definitions without `file = <NAME>_FILE` patch CHUNK_FILE.
+	// Definitions without `file = <NAME>_FILE` patch UI_FILE.
 	const fileNames = Object.fromEntries([...source.matchAll(/local ([A-Z]+_FILE) =/g)].map(([, name]) => [name, longString(source, `local ${name}`)]));
 	const patches = [];
 	const re = /(find|match|replace)\s*=\s*\[(=*)\[([\s\S]*?)\]\2\]|\bfile = ([A-Z]+_FILE),/g;
@@ -47,7 +47,7 @@ function parsePatches(source) {
 		const [, key, , value, fileName] = m;
 		if (fileName) file = fileNames[fileName];
 		else if (key === 'find') {
-			patches.push({ label: `patch #${patches.length + 1}`, file: file ?? fileNames.CHUNK_FILE, find: value.replaceAll('@ID@', id), transforms: [] });
+			patches.push({ label: `patch #${patches.length + 1}`, file: file ?? fileNames.UI_FILE, find: value.replaceAll('@ID@', id), transforms: [] });
 			file = undefined;
 		} else if (key === 'match') patches.at(-1).transforms.push({ match: value.replaceAll('@ID@', id) });
 		else patches.at(-1).transforms.at(-1).replace = value.replaceAll('@HOOKS@', hooks);
@@ -55,7 +55,7 @@ function parsePatches(source) {
 	return { pluginId, hooks, patches };
 }
 
-// Steam waits for the patched 14 MB bundle. In Rust's regex crate \w, \d, \s and \b
+// Steam waits for the patched 16 MB bundle. In Rust's regex crate \w, \d, \s and \b
 // are Unicode-aware and slow, and spans like .* or .{0,n} can make the search crawl,
 // which once made Steam's UI time out while loading.
 const SLOW_PATTERN_PARTS = [/\\[wWdDsSbB]/, /\.[*+]/, /\.\{/, /\(\?[a-z-]*s/];

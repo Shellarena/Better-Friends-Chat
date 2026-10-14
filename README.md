@@ -40,7 +40,7 @@ With **Write a debug log** enabled (Troubleshooting section of the settings, off
 
 Steam's UI is a React app running in Chromium. The plugin combines two Millennium mechanisms:
 
-1. **Patches** (`backend/patches.lua`): Millennium rewrites Steam's JavaScript while Steam loads it. Eight small patches in Steam's friends UI bundle and one in its shared UI library (`library.js`) call into the plugin:
+1. **Patches** (`backend/patches.lua`): Millennium rewrites Steam's JavaScript while Steam loads it. Nine small patches in Steam's UI bundle (`steamui/sp.js`, which holds the friends UI and the shared UI library) call into the plugin:
    1. the initial sort order of the “Offline” group,
    2. whether the friends window renders the chat area,
    3. every request to show the friends list (button, tray menu, `steam://open/friends`, notifications), so the flyout can take over,
@@ -48,7 +48,7 @@ Steam's UI is a React app running in Chromium. The plugin combines two Millenniu
    5. the window container those components use, so Steam never treats the flyout like a separate friends window,
    6. the browser context of the friends list in the flyout, which always belongs to the desktop (not the in-game overlay),
    7. whether the chat tab bar shows the arrow that lists all open chats,
-   8. (`library.js`) whether a menu opens as a popup window of its own: menus of the friends list in the flyout (such as the own status) stay inside the flyout,
+   8. whether a menu opens as a popup window of its own: menus of the friends list in the flyout (such as the own status) stay inside the flyout,
    9. every update of Steam's unread message counters, for the dot on the button.
 2. **Frontend** (`frontend/`): the hooks the patches call, the flyout, the dot for new messages, the window resizing for docked chats and the settings page. Store and community pages are native views that Steam draws on top of its window's own UI, so the flyout is such a view as well (the way Steam shows its notification toasts on top of those pages): a page of its own inside the Steam window, which the friends list renders into like into Steam's own friends window, as a portal from Steam's friends UI.
 
