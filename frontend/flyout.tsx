@@ -235,6 +235,18 @@ class Flyout {
 		return true;
 	}
 
+	/**
+	 * Patch #10: Steam showed a view such as the store page and put it in front of the other
+	 * views of its window. It also does that when the Steam window comes back from the tray
+	 * or is restored, e.g. for a click on a message notification: without this, the flyout
+	 * opened for the chat would end up behind the page.
+	 */
+	onViewShown() {
+		if (!this.isOpen()) return;
+		log('flyout back in front of a page Steam showed');
+		this.showView();
+	}
+
 	/** Patch #3: called for every request to show the friends list. */
 	handleShowRequest(context: steam.BrowserContext | undefined, startMinimized: boolean, takeFocus: boolean): boolean {
 		log('show request', { pid: context?.m_unPID, browser: context?.m_nBrowserID, startMinimized, takeFocus, mounted: this.mounted, opened: this.opened });
@@ -728,7 +740,8 @@ class Flyout {
 	/**
 	 * While the flyout is open, a click into a store or community page closes it like
 	 * any other click elsewhere, and the flyout stays in front of a page that Steam shows
-	 * meanwhile (Steam brings that page's view to the front when it shows it).
+	 * meanwhile (Steam brings that page's view to the front when it shows it). Patch #10
+	 * already does that; the poll is the fallback for newly opened pages without it.
 	 */
 	private watchStorePage(watch: boolean) {
 		this.watchedStorePage?.off?.('focus-changed', this.onStorePageFocus);

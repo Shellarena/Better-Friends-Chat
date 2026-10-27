@@ -70,4 +70,7 @@ export const bfcHooks = {
 
 	/** Patch #9: Steam updated its unread message counters. */
 	UnreadMessagesChanged: safe('UnreadMessagesChanged', undefined, () => onUnreadMessagesChanged()),
+
+	/** Patch #10: Steam showed a view (store page) in front of the other views of its window. */
+	ViewShown: safe('ViewShown', undefined, () => flyout.onViewShown()),
 };
