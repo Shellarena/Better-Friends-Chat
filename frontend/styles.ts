@@ -74,6 +74,12 @@ body {
 	width: 100% !important;
 }
 
+/* Steam's footer below the friends list only holds a debug button that is never shown, which
+   leaves an empty bar between the groups and the bottom bar. */
+#${FLYOUT_ROOT_ID} .friendListFooter {
+	display: none;
+}
+
 /* No button that collapses the friends list into the chat. */
 #${FLYOUT_ROOT_ID} .friendListCollapse {
 	display: none;
