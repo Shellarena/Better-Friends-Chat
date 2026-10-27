@@ -153,6 +153,20 @@ local definitions = {
             },
         },
     },
+
+    -- 10) Steam shows the native views of its windows here (store and community
+    --     pages) and puts them in front of the window's other views: when such a page
+    --     opens, and again whenever its window comes back from the tray, is restored
+    --     or maximized. The open flyout then goes back on top.
+    {
+        find = [==[return @ID@\(\),@ID@\.SetVisible\(!0\),\(\)=>]==],
+        transforms = {
+            {
+                match = [==[,\(\)=>$]==],
+                replace = [==[,@HOOKS@?.ViewShown?.(),()=>]==],
+            },
+        },
+    },
 }
 
 local function expand(text, placeholders)
